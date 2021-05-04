@@ -1,0 +1,101 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Are you depressed?</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<!-- BODY -->
+
+<body>
+    <nav id="headerSection" class="navbar navbar-default" style="background: #fff;">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="navbar-header col-sm-8 col-md-8">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="pad-10" href="/"><img src="logo.png" alt="SC logo" align="left"
+                            class="img-responsive logo" width="60" height="60" style="padding: 5px 0;"></a>
+                    <div class="headerText" style="float: right;">
+                        <div class="text-center">
+                            <h1 style="margin: 5px;">Are you depressed?</h1>
+                            <h5 class="announcement">This data is private and does not leave your computer.</h5>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="collapse navbar-collapse col-sm-4 col-md-4 navbar-right" id="myNavbar"
+                    style="padding-top: 15px;margin: 5px;">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="active"><a href="/phq9">Detection</a></li>
+                        <li><a href="/phq9/faq">Faq</a></li>
+                        <li class="dropdown lang">
+                            <a class="dropdown-toggle" data-toggle="dropdown">Lang
+                                <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li class="text-center active"><a href="/phq9">English</a></li>
+                                <li class="text-center"><a href="/phq9/es">Española</a></li>
+                                <li class="text-center"><a href="/phq9/hi">हिंदी</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container text-center" style="margin-top:0px">
+        <!-- <h1>Are you depressed?</h1> -->
+    </div>
+    <div class="container ">
+        <ul id="screening" class="list-group">
+
+        </ul>
+    </div>
+
+
+    <div class="container text-center hide results">
+
+    </div>
+    <div class="container text-center results hide">
+        <p id="results"></p>
+    </div>
+
+    <div class="container text-center bottom">
+        <button id="submit-btn" class="btn btn-primary btn-lg">Submit</button>
+        <button id="retake-btn" class="hide btn btn-primary btn-lg">Retake</button>
+    </div>
+
+    <div id="share-by-email" class="container share bottom light-yellow-bg light-yellow-bg-blur text-center hide">
+        <div class="form-inline">
+            <div class="form-group">
+                <label for="email" class="share-msg">* Do you want to send this report to someone?</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter email address">
+            </div>
+            <button type="button" id="share-score-btn" class="btn btn-primary">Send</button>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+
+    <!-- JQUERY -->
+    <script src="https://code.jquery.com/jquery-3.2.0.min.js"
+        integrity="sha256-JAW99MJVpJBGcbzEuXk4Az05s/XyDdBomFqNlM3ic+I=" crossorigin="anonymous"></script>
+    <!-- BOOTSTRAP -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+    <!-- CUSTOM -->
+    <script src="app.js"></script>
+</body>
+
+</html>
