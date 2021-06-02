@@ -7,7 +7,7 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
         integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css">
 
 </head>
 <!-- BODY -->
@@ -22,7 +22,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="pad-10" href="/"><img src="logo.png" alt="SC logo" align="left"
+                    <a class="pad-10" href="/"><img src="../logo.png" alt="SC logo" align="left"
                             class="img-responsive logo" width="60" height="60" style="padding: 5px 0;"></a>
                     <div class="headerText" style="float: right;">
                         <div class="text-center">
@@ -56,47 +56,18 @@
         <!-- <h1>Are you depressed?</h1> -->
     </div>
     <div class="container ">
-        <ul id="screening" class="list-group">
-
-        </ul>
+        <p id="mail_verify">Email verified successfully.</p>
     </div>
 
 
-    <div class="container text-center hide results">
-
-    </div>
-    <div class="container text-center results hide">
-        <p id="results"></p>
-    </div>
-
-    <div class="container text-center bottom">
+    <!-- <div class="container text-center bottom">
         <button id="submit-btn" class="btn btn-primary btn-lg">Submit</button>
-    </div>
+    </div> -->
 
-  
-
-    <div id="share-by-email" class="container share bottom light-yellow-bg light-yellow-bg-blur text-center hide">
-
-        <p id="email_validate" class="" style="display:none;"></p>
-        <br/>
-        <div class="form-inline">
-            <div class="form-group">
-                <label for="email" class="share-msg">Submit your data for research. your identity will be kept confidential.</label>
-                <input type="email" class="form-control" id="email_research" placeholder="Enter your email address">
-            </div>
-            <button type="button" id="submit-research-btn" class="btn btn-primary">Submit for research</button>
-        </div>
-        <br/>
-        <div class="form-inline" style="margin-left: 60px;">
-            <div class="form-group">
-                <label for="email" class="share-msg">* Do you want to send this report to someone?</label>
-                <input type="email" class="form-control" id="email" placeholder="Enter email address">
-            </div>
-            <button type="button" id="share-score-btn" class="btn btn-primary">Send</button>
-        </div>
-    </div>
-
+    
+    <!-- https://www.savantcare.com/v1/api/website-screening/public/index.php/api/PHQ9fnSendEmail -->
     <!-- SCRIPTS -->
+
     <!-- JQUERY -->
     <script src="https://code.jquery.com/jquery-3.2.0.min.js"
         integrity="sha256-JAW99MJVpJBGcbzEuXk4Az05s/XyDdBomFqNlM3ic+I=" crossorigin="anonymous"></script>
@@ -105,7 +76,58 @@
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
     <!-- CUSTOM -->
-    <script src="app.js"></script>
+    <script >
+
+
+
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+    return false;
+};
+
+
+
+var emailHash = getUrlParameter('hash');
+if (typeof emailHash !== 'undefined' ) {
+	$.ajax({
+		type: 'POST',
+		url: window.location.origin + '/v1/api/website-screening/public/index.php/api/PHQ9VerifyemailHash',
+		dataType: 'json',
+		encode: true,
+		crossDomain: true,
+		data: {
+			emailHash: emailHash
+		},
+		success: function (data) {
+			console.log(data);
+			if (data.status != 'ok') {
+
+			} else {
+				$('#mail_verify').html('Email verified successfully.');
+			}
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+			//$('#getData').html(data);
+		}
+	});
+
+
+}
+
+
+
+    </script>
 </body>
 
 </html>

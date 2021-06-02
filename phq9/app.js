@@ -222,7 +222,6 @@ function findValueSet(groupName) {
 	return prompt_values;
 }
 
-
 // When user clicks a value to agree/disagree with the prompt, display to the user what they selected
 $('.value-btn').mousedown(function () {
 	var classList = $(this).attr('class');
@@ -319,10 +318,51 @@ function getMailtoUrl(to, subject, body) {
 }
 
 $('#share-score-btn').click(function () {
-	var to = $.trim($('#email').val());
+	var to = $.trim($('#email_research').val());
 	var body;
 	var mailtoString = getMailtoUrl(to, emailSubject, emailBody);
 	//console.log(emailBody);
 	if (mailtoString !== false)
 		window.open(mailtoString);
+})
+
+$('#submit-research-btn').click(function () {
+	var emailId = $.trim($('#email_research').val()); //total
+	var emailRegx = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+	if(emailId == '') {
+		$('#email_validate').html('Please enter your email address').show().addClass('info-danger');
+		return ;
+	}
+	else if (emailRegx.test(emailId) == false) {
+		$('#email_validate').html('Please enter proper email address').show().addClass('info-danger');
+		return ;
+	}
+
+	$('#submit-research-btn'). attr('disabled','disabled');
+	$.ajax({
+		type: 'POST',
+		url: window.location.origin + '/v1/api/website-screening/public/index.php/api/updatePHQ9Research',
+		dataType: 'json',
+		encode: true,
+		crossDomain: true,
+		data: {
+			emailId: emailId,
+			totalScore: total
+		},
+		success: function (data) {
+			console.log(data);
+			if (data.status !='ok') {
+
+			} else {
+				$('#email_validate')
+				.html('Data submitted successfully. An email is sent to your mailbox. Please verify it.')
+				.show().removeClass('info-danger').addClass('info-success');
+				//$('#submit-research-btn').removeAttr('disabled');
+			}
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+			//$('#getData').html(data);
+			$('#submit-research-btn').removeAttr('disabled');
+		}
+	});
 })
