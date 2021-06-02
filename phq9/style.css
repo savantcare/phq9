@@ -28,6 +28,12 @@
 	font-size: 20px;
 }
 
+.info-danger {
+    color: #a94442;
+}
+
+.info-success {
+    color: #3c763d;}
 /*.btn {
 	margin: 0 20px 0 20px;
 }*/
