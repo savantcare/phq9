@@ -355,7 +355,7 @@ $('#submit-research-btn').click(function () {
 
 			} else {
 				$('#email_validate')
-				.html('Data submitted successfully. An email is sent to your mailbox. Please verify it.')
+				.html('Data submitted successfully. An email is transferred to your mailbox. Please verify it.')
 				.show().removeClass('info-danger').addClass('info-success');
 				//$('#submit-research-btn').removeAttr('disabled');
 			}
