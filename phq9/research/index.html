@@ -4,14 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Are you depressed?</title>
-
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
         integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="../style.css">
 
+
 </head>
 <!-- BODY -->
-
 <body>
     <nav id="headerSection" class="navbar navbar-default" style="background: #fff;">
         <div class="container-fluid">
@@ -56,9 +55,23 @@
         <!-- <h1>Are you depressed?</h1> -->
     </div>
 
-    <div class="container ">
-        <h2>phq9 Research Details.</h2>
+    <div class="container-fluid">
+        <!-- <h2>phq9 Research Details.</h2> -->
         <div id="phq9Records"></div>
+
+        <div class="row">
+            <div class="col-md-7">
+                <!-- <div id="piechart"></div> -->
+                <div id="top_x_div" style="width: 900px; height: 500px;"></div>
+            </div>
+            <div class="col-md-5 domain-tree" >
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>
+                <div id="domain_list"></div>
+            </div>
+        </div>
     </div>
 
     <!-- SCRIPTS -->
@@ -70,53 +83,117 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script src="https://unpkg.com/underscore@1.13.1/underscore-umd-min.js" ></script>
     <!-- CUSTOM -->
-    <script >
 
+<script type="text/javascript">               
 
+var arColor = ["#a53002", "#09d419", "#c10c0c", "#1301ad", "#e6c210", '#BC243C', '#5B5EA6', '#955251'];
+var color = '';
+var graphDataSet = [];
+var arPHQ9DomainSet = [];
+var uniquePHQ9DomainSet = [];
+var arPHQ9GroupedRecords = [];
+var arPHQ9GraphRecordSet = [["Domain", "Score", { role: "style" } ]] //[['Domain', 'Score']];
 
-function fnGetPHQ9ResearchDetail(records) 
-{
-    var tableData = '';
-    tableData += '<table class="table table-striped" style="width:75%;">'+
-        '<thead>'+
-        '<tr><th>email</th><th>Score</th> </tr>'+
-        '</thead>'+
-        '<tbody>';
-    records.forEach(function(data) {
+var urlPath = window.location.href;
+var arUrlPath = urlPath.split('/research/');
+console.log(arUrlPath);
 
-        var graphBadge = '';
-        //var badgeColor =  getBadgeColor(prompts[i].selected_weight);
-        tableData += '<tr>'+
-        '<td >'+'###############@'+data.emailDomain+'</td>'+
-        '<td>'+data.screeningScore+'</td></tr>';
-    });
-    tableData += '</tbody></table>';
-    return tableData;
+function getRandomColor() {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
 }
 
+// Draw the chart and set the chart values
+function drawChartNew() {
+      var data = google.visualization.arrayToDataTable(graphDataSet);
+      var view = new google.visualization.DataView(data);
+      view.setColumns([0, 1, { calc: "stringify", sourceColumn: 1, type: "string", role: "annotation"}, 2] );
+      var options = { title: 'PHQ9 Depression Ratio', width: 800, height: 600, bar: {groupWidth: "15%"}, legend: { position: "none" },};
+      var chart_new = new google.visualization.ColumnChart(document.getElementById("top_x_div")); //BarChart
+      chart_new.draw(view, options);
+}
+
+function fnGetGraphPHQ9Dataset(data) {
+    var phq9Records = data.records;
+    phq9Records.forEach(function(data) {
+        if (typeof arPHQ9GroupedRecords[data.domainName] === 'undefined' ) 
+            arPHQ9GroupedRecords[data.domainName] = [];
+        arPHQ9GroupedRecords[data.domainName].push(data.screeningScore);
+        arPHQ9DomainSet.push(data.domainName); 
+    });
+
+    if (typeof arUrlPath[1] !== 'undefined' &&  arUrlPath[1] != '' ) {
+        var arDomains = arUrlPath[1].split('-vs-');
+        //console.log('url path is ', arUrlPath[1], arDomains);
+        uniquePHQ9DomainSet = arDomains;
+        $('.domain-tree').hide();
+
+    } else {
+        // filtered unique domain dataset
+        uniquePHQ9DomainSet = arPHQ9DomainSet.filter(function(item, pos) {
+            return arPHQ9DomainSet.indexOf(item) == pos;
+        });
+    }
+    var domainList = '';
+
+    console.log(uniquePHQ9DomainSet, arPHQ9GroupedRecords);
+    uniquePHQ9DomainSet.forEach(function(item, index) {
+        var phq9RecordItemIndex =   _.findLastIndex(phq9Records, { domainName: item });
+        color = getRandomColor(); //arColor[Math.floor(Math.random() * arColor.length)];
+        var sum = arPHQ9GroupedRecords[item].reduce((a, b) => a + b, 0);
+        var avg = parseInt(sum / arPHQ9GroupedRecords[item].length) || 0;
+        var siteName =  item+'.'+phq9Records[phq9RecordItemIndex].domainSuffix;
+        arPHQ9GraphRecordSet.push([siteName, avg, color]);
+        //console.log(item, arPHQ9GroupedRecords[item], sum, avg);
+
+        domainList += '<div class="form-check">'+
+            '<label class="form-check-label">'+
+            '<input type="checkbox" class="form-check-input" value="1" checked="true"> '+siteName+' </label>'+
+        '</div>';
+    });
+    $('#domain_list').html(domainList);
+
+    graphDataSet = arPHQ9GraphRecordSet;
+    console.log(arPHQ9GraphRecordSet);
+
+    // Load google charts
+    google.charts.load("current", {packages:["corechart"]});
+    google.charts.setOnLoadCallback(drawChartNew);
+}
+
+
+function fnGetPHQ9ResearchDataset() 
+{
     $.ajax({
         type: 'GET',
-        url: window.location.origin + '/v1/api/website-screening/public/index.php/api/PHQ9ResearchData',
+        url:  'https://www.savantcare.com/v1/api/website-screening/public/index.php/api/PHQ9ResearchData', //window.location.origin +
         dataType: 'json',
         encode: true,
         crossDomain: true,
         success: function (data) {
-            //console.log(data);
-            var phq9ResearchDetail = fnGetPHQ9ResearchDetail(data.records);
-            jQuery('#phq9Records').html(phq9ResearchDetail);
-
             if (data.status != 'ok') {
-
+                //console.log(data);
             } else {
-            
+                //var phq9ResearchDetail = fnGetPHQ9ResearchDetail(data.records);
+                //jQuery('#phq9Records').html(phq9ResearchDetail);
+                fnGetGraphPHQ9Dataset(data);
             }
         },
         error: function (jqXHR, textStatus, errorThrown) {
             //$('#getData').html(data);
         }
     });
-</script>
-</body>
+}
 
+fnGetPHQ9ResearchDataset();
+</script>
+
+</body>
 </html>
